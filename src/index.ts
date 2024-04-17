@@ -1,4 +1,16 @@
 import { Telegraf } from 'telegraf';
+import mongoose from 'mongoose';
+
+const connectMongoDB = async () => {
+  try {
+    await mongoose.connect('');
+    console.log('connection to MongoDB!')
+  } catch(e) {
+    console.log('error connection to MongoDB', e);
+  }
+}
+
+connectMongoDB();
 
 /**
  * Настройки
@@ -12,14 +24,14 @@ let config = {
 };
 
 
-const bot = new Telegraf('');
+const bot = new Telegraf(config.token);
 
 /**
  * Проверяем пользователя на права
  * @param userId {number}
  * @returns {boolean}
  */
-let isAdmin = (userId) => {
+let isAdmin = (userId: number) => {
   return userId == config.admin;
 };
 
@@ -58,13 +70,9 @@ bot.action('no', (ctx) => {
 
 bot.on('message', async (ctx) => {
   await console.log('ctx.message.from.id', ctx.message.from.id);
-  await ctx.reply(ctx.message);
+  // await ctx.reply(ctx.message);
 })
 
-
-// const member = bot.telegram.getChatMember();
-// console.log('member', member);
-// bot.telegram.sendMessage(-1002089738139, 'Хаю хай');
 bot.launch();
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
